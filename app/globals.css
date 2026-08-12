@@ -475,10 +475,10 @@
 @keyframes process-arrow-nudge {
   0%,
   100% {
-    transform: translateX(0);
+    transform: translateY(0);
   }
   50% {
-    transform: translateX(6px);
+    transform: translateY(6px);
   }
 }
 .process-arrow {

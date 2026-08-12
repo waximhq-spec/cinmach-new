@@ -134,10 +134,12 @@ export default function ProcessSection() {
         {/* Steps -- horizontal track on mobile, vertical column on desktop */}
         <div className="min-h-0 flex-1 overflow-hidden border-y border-border-light bg-white-primary lg:col-span-7 lg:flex-none lg:overflow-visible">
           <div ref={trackRef} className="process-track flex h-full lg:h-auto lg:flex-col">
-            {/* Lead-in card -- mobile only, tells the user the track moves sideways */}
+            {/* Lead-in card -- mobile only. Arrow points down to match the
+                scrolling gesture that actually drives the track, even
+                though the cards themselves move sideways. */}
             <div className="process-card process-intro flex w-[62vw] shrink-0 flex-col justify-center border-r border-border-light px-5 md:px-10 lg:hidden">
               <span className="process-arrow flex h-14 w-14 items-center justify-center rounded-full border border-border-light text-h4 text-red">
-                →
+                ↓
               </span>
               <span className="text-label text-gray mt-6">Keep scrolling</span>
             </div>

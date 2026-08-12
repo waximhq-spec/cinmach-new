@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { nav } from "@/lib/content";
 import BookCallButton from "@/components/BookCallButton";
 
-type NavTone = "dark" | "light";
+type NavTone = "dark" | "light" | "red";
 type NavTheme = NavTone | "split";
 
 /** Vertical point on the bar used to decide which section is behind it. */
@@ -20,6 +20,8 @@ const TONES = {
     link: "text-white-primary/85 hover:text-white-primary",
     divider: "border-border-dark",
     scrolledBg: "bg-black-primary/90 backdrop-blur-md border-b border-border-dark",
+    // White pill on a dark bar.
+    cta: "btn-solid-light",
   },
   light: {
     logo: "text-ink",
@@ -28,17 +30,44 @@ const TONES = {
     link: "text-ink/85 hover:text-ink",
     divider: "border-border-light",
     scrolledBg: "bg-white-primary/90 backdrop-blur-md border-b border-border-light",
+    // Black pill on a white bar.
+    cta: "btn-solid-dark",
+  },
+  red: {
+    logo: "text-white-primary",
+    metaStrong: "text-white-primary/80",
+    metaMuted: "text-white-primary/60",
+    link: "text-white-primary/85 hover:text-white-primary",
+    divider: "border-white-primary/25",
+    scrolledBg: "bg-red/95 backdrop-blur-md border-b border-red-dark",
+    // Same white pill as the dark bar -- the brief keeps it white on red too.
+    cta: "btn-solid-light",
   },
 } as const;
 
-/** Relative luminance of a computed colour; -1 when fully transparent. */
-function luminanceOf(color: string) {
+/** Parsed [r, g, b, a] from a computed color string, or null if unparseable. */
+function parseRgba(color: string): [number, number, number, number] | null {
   const parts = color.match(/[\d.]+/g);
-  if (!parts || parts.length < 3) return -1;
-  const alpha = parts.length > 3 ? Number(parts[3]) : 1;
-  if (alpha === 0) return -1;
+  if (!parts || parts.length < 3) return null;
   const [r, g, b] = parts.map(Number);
+  const a = parts.length > 3 ? Number(parts[3]) : 1;
+  return [r, g, b, a];
+}
+
+function luminanceOf([r, g, b]: [number, number, number, number]) {
   return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+/** True for the brand red and its pressed/dark variants (not for e.g. gray). */
+function isBrandRed([r, g, b]: [number, number, number, number]) {
+  return r > 90 && r - g > 70 && r - b > 50;
+}
+
+function toneOf(color: string): NavTone | null {
+  const rgba = parseRgba(color);
+  if (!rgba || rgba[3] === 0) return null;
+  if (isBrandRed(rgba)) return "red";
+  return luminanceOf(rgba) > 0.5 ? "light" : "dark";
 }
 
 export default function Navbar() {
@@ -73,8 +102,8 @@ export default function Navbar() {
       if (declared) return declared;
       let node: HTMLElement | null = el;
       while (node) {
-        const lum = luminanceOf(getComputedStyle(node).backgroundColor);
-        if (lum >= 0) return lum > 0.5 ? "light" : "dark";
+        const tone = toneOf(getComputedStyle(node).backgroundColor);
+        if (tone) return tone;
         node = node.parentElement;
       }
       return "dark";
@@ -147,7 +176,7 @@ export default function Navbar() {
 
   // A split section is dark on its left, so the base bar stays dark and a
   // clipped light copy is laid over the right-hand portion.
-  const baseTone: NavTone = theme === "light" ? "light" : "dark";
+  const baseTone: NavTone = theme === "split" ? "dark" : theme;
   const tone = TONES[baseTone];
 
   const background = mobileOpen
@@ -178,62 +207,67 @@ export default function Navbar() {
           {brand(tone)}
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {nav.map((item) =>
-            item.dropdown ? (
-              <div
-                key={item.label}
-                className="relative"
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
-              >
+        {/*
+          Nav + CTA grouped and pushed to the right as one cluster (rather than
+          spread across the bar with justify-between) so both land inside the
+          section's actual light-toned area on the split layout instead of
+          straddling into the dark rail.
+        */}
+        <div className="hidden lg:flex items-center gap-10">
+          <nav className="flex items-center gap-8">
+            {nav.map((item) =>
+              item.dropdown ? (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => setServicesOpen(true)}
+                  onMouseLeave={() => setServicesOpen(false)}
+                >
+                  <Link
+                    href={item.href}
+                    className={`link-sweep text-label transition-colors flex items-center gap-1.5 ${tone.link}`}
+                  >
+                    {item.label}
+                    <svg width="9" height="6" viewBox="0 0 9 6" fill="none" aria-hidden="true">
+                      <path d="M1 1L4.5 4.5L8 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                    </svg>
+                  </Link>
+                  {servicesOpen && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 w-64">
+                      <div className="bg-black-secondary border border-border-dark p-2 shadow-2xl">
+                        {item.dropdown.map((d) => (
+                          <Link
+                            key={d.label}
+                            href={d.comingSoon ? "#" : d.href}
+                            aria-disabled={d.comingSoon}
+                            onClick={(e) => d.comingSoon && e.preventDefault()}
+                            className={`flex items-center justify-between px-4 py-3 text-body-sm transition-colors ${
+                              d.comingSoon
+                                ? "text-gray cursor-not-allowed"
+                                : "text-white-primary/85 hover:bg-black-surface hover:text-white-primary"
+                            }`}
+                          >
+                            {d.label === "All Services" ? "All Services →" : d.label}
+                            {d.comingSoon && <span className="text-mono text-red">Soon</span>}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
                 <Link
+                  key={item.label}
                   href={item.href}
-                  className={`link-sweep text-label transition-colors flex items-center gap-1.5 ${tone.link}`}
+                  className={`link-sweep text-label transition-colors ${tone.link}`}
                 >
                   {item.label}
-                  <svg width="9" height="6" viewBox="0 0 9 6" fill="none" aria-hidden="true">
-                    <path d="M1 1L4.5 4.5L8 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-                  </svg>
                 </Link>
-                {servicesOpen && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-5 w-64">
-                    <div className="bg-black-secondary border border-border-dark p-2 shadow-2xl">
-                      {item.dropdown.map((d) => (
-                        <Link
-                          key={d.label}
-                          href={d.comingSoon ? "#" : d.href}
-                          aria-disabled={d.comingSoon}
-                          onClick={(e) => d.comingSoon && e.preventDefault()}
-                          className={`flex items-center justify-between px-4 py-3 text-body-sm transition-colors ${
-                            d.comingSoon
-                              ? "text-gray cursor-not-allowed"
-                              : "text-white-primary/85 hover:bg-black-surface hover:text-white-primary"
-                          }`}
-                        >
-                          {d.label === "All Services" ? "All Services →" : d.label}
-                          {d.comingSoon && <span className="text-mono text-red">Soon</span>}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`link-sweep text-label transition-colors ${tone.link}`}
-              >
-                {item.label}
-              </Link>
-            )
-          )}
-        </nav>
+              )
+            )}
+          </nav>
 
-        <div className="hidden lg:block">
-          <BookCallButton className="btn btn-primary !py-3 !px-6" />
+          <BookCallButton className={`btn ${tone.cta} !py-3 !px-6`}>Get a Quote</BookCallButton>
         </div>
 
         {/* Mobile toggle */}
@@ -279,23 +313,23 @@ export default function Navbar() {
           />
           <div className="container-cin relative flex h-[72px] items-center justify-between gap-6">
             {brand(TONES.light)}
-            <nav className="hidden lg:flex items-center gap-8">
-              {nav.map((item) => (
-                <span
-                  key={item.label}
-                  className={`text-label flex items-center gap-1.5 ${TONES.light.link}`}
-                >
-                  {item.label}
-                  {item.dropdown && (
-                    <svg width="9" height="6" viewBox="0 0 9 6" fill="none">
-                      <path d="M1 1L4.5 4.5L8 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-                    </svg>
-                  )}
-                </span>
-              ))}
-            </nav>
-            <div className="hidden lg:block">
-              <span className="btn btn-primary !py-3 !px-6">Book a Strategy Call</span>
+            <div className="hidden lg:flex items-center gap-10">
+              <nav className="flex items-center gap-8">
+                {nav.map((item) => (
+                  <span
+                    key={item.label}
+                    className={`text-label flex items-center gap-1.5 ${TONES.light.link}`}
+                  >
+                    {item.label}
+                    {item.dropdown && (
+                      <svg width="9" height="6" viewBox="0 0 9 6" fill="none">
+                        <path d="M1 1L4.5 4.5L8 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                      </svg>
+                    )}
+                  </span>
+                ))}
+              </nav>
+              <span className={`btn ${TONES.light.cta} !py-3 !px-6`}>Get a Quote</span>
             </div>
           </div>
         </div>
@@ -361,7 +395,7 @@ export default function Navbar() {
             )}
           </nav>
           <div className="flex flex-col gap-6">
-            <BookCallButton className="btn btn-primary w-full" />
+            <BookCallButton className="btn btn-solid-light w-full">Get a Quote</BookCallButton>
             <p className="text-mono text-gray">© 2026 Cinmach Productions — Manama, Bahrain</p>
           </div>
         </div>

@@ -1,39 +1,48 @@
 import SectionHeader from "@/components/SectionHeader";
-import Reveal from "@/components/Reveal";
 import { process } from "@/lib/content";
 
+/**
+ * Two-column scroll section.
+ *
+ * Desktop: the black left rail is `position: sticky` inside a grid item that
+ * stretches to the full height of the right column, so it stays anchored in
+ * the viewport while the white right column -- one full screen per step --
+ * scrolls past it. The right column is what gives the section its height, so
+ * the rail releases on its own once the last step has been read and the next
+ * section continues normally. No fixed positioning, no scroll listeners, no
+ * nested scroll container: the page stays the scrolling element.
+ *
+ * Mobile/tablet: sticky is dropped entirely and the whole thing collapses to a
+ * single column with normal section padding.
+ */
 export default function ProcessSection() {
   return (
     <section className="bg-black-primary">
-      <div className="container-cin py-24 md:py-36">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            <div className="lg:sticky lg:top-28">
-              <SectionHeader
-                index="(04)"
-                label="Process"
-                title={<>How we <span className="text-red">scale you.</span></>}
-                intro="Four steps, repeated on every project — from the first conversation to the final cinematic export."
-              />
-            </div>
+      <div className="lg:grid lg:grid-cols-12">
+        {/* Left rail -- sticky for the length of the right column */}
+        <div className="lg:col-span-5">
+          <div className="flex flex-col justify-center px-5 py-20 md:px-10 md:py-28 lg:sticky lg:top-0 lg:h-screen lg:py-16 xl:px-16">
+            <SectionHeader
+              index="(04)"
+              label="Process"
+              title={<>How we <span className="text-red">scale you.</span></>}
+              intro="Four steps, repeated on every project — from the first conversation to the final cinematic export."
+            />
           </div>
+        </div>
 
-          <div className="lg:col-span-7 flex flex-col">
-            {process.map((step, i) => (
-              <Reveal
-                key={step.step}
-                className="group border-t border-border-dark py-10 md:py-14 first:pt-0 last:border-b flex flex-col sm:flex-row gap-6 sm:gap-12"
-              >
-                <span className="text-display text-5xl sm:text-6xl text-border-dark group-hover:text-red transition-colors duration-500 shrink-0 leading-none">
-                  {step.step}
-                </span>
-                <div>
-                  <h3 className="text-h2 text-white-primary">{step.title}</h3>
-                  <p className="text-body text-gray-light mt-4 max-w-md">{step.description}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+        {/* Right column -- drives the height of the section */}
+        <div className="border-y border-border-light bg-white-primary lg:col-span-7">
+          {process.map((step) => (
+            <article
+              key={step.step}
+              className="flex flex-col justify-center border-t border-border-light px-5 py-16 first:border-t-0 md:px-10 md:py-20 lg:min-h-screen lg:py-24 xl:px-16"
+            >
+              <span className="text-mono text-red">{step.step}</span>
+              <h3 className="text-h1 text-ink mt-6">{step.title}</h3>
+              <p className="text-body text-ink-muted mt-6 max-w-xl">{step.description}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>

@@ -414,50 +414,21 @@
 }
 
 /* ============================================================
-   WORK MARQUEE -- "Selected Work": two cards on screen at once,
-   full-bleed (no gap/padding), paced right-to-left auto-scroll.
-   Hold on each pair, then ease to the next. Tuned for a 6-card
-   (3-pair) featured list -- see FeaturedWork.tsx.
+   WORK TIMER RING -- small circular "next scroll" countdown next
+   to the Selected Work marquee. Restarted from React via a key
+   change each cycle; frozen with animation-play-state while a
+   project modal is open. See FeaturedWork.tsx.
    ============================================================ */
-.work-marquee {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
+.work-timer-ring {
+  stroke-dashoffset: 100;
+  animation: work-timer-fill linear forwards;
 }
-.work-marquee__track {
-  display: flex;
-  width: 100%;
-  animation: work-marquee-scroll var(--work-marquee-duration, 24s) infinite;
-}
-.work-marquee:hover .work-marquee__track {
-  animation-play-state: paused;
-}
-.work-marquee__card {
-  flex: 0 0 50%;
-  width: 50%;
-}
-@keyframes work-marquee-scroll {
-  0%,
-  26.667% {
-    transform: translateX(0%);
+@keyframes work-timer-fill {
+  from {
+    stroke-dashoffset: 100;
   }
-  33.333% {
-    transform: translateX(-100%);
-    animation-timing-function: var(--ease-cinematic);
-  }
-  60% {
-    transform: translateX(-100%);
-  }
-  66.667% {
-    transform: translateX(-200%);
-    animation-timing-function: var(--ease-cinematic);
-  }
-  93.333% {
-    transform: translateX(-200%);
-  }
-  100% {
-    transform: translateX(-300%);
-    animation-timing-function: var(--ease-cinematic);
+  to {
+    stroke-dashoffset: 0;
   }
 }
 
@@ -537,7 +508,7 @@
   .marquee__track {
     animation: none;
   }
-  .work-marquee__track {
+  .work-timer-ring {
     animation: none;
   }
   .modal-backdrop,

@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdftotext -layout \"C:\\\\Users\\\\wxm\\\\Downloads\\\\desing-system.pdf\" \"C:\\\\Users\\\\wxm\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-wxm-Desktop-cinmach\\\\5d525e7f-b131-4fb6-9adc-b2aa2098b474\\\\scratchpad\\\\design-system.txt\")",
+      "Bash(npm --version)",
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias \"@/*\" --no-turbopack --use-npm)",
+      "Bash(taskkill //F //IM cp.exe)",
+      "Bash(kill -9 14)",
+      "Read(//c/Users/wxm/Desktop/**)",
+      "Read(//c/Users/wxm/**)",
+      "Bash(mkdir -p ../.cinmach-preserve)",
+      "Bash(mv cinmach-logo.psd CINMACH_WEBSITE_INVENTORY.md ../.cinmach-preserve/)",
+      "Bash(mv ../.cinmach-preserve/cinmach-logo.psd ../.cinmach-preserve/CINMACH_WEBSITE_INVENTORY.md .)",
+      "Bash(rmdir ../.cinmach-preserve)",
+      "Bash(npm run *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\wxm\\\\Desktop\\\\cinmach\\\\app\\\\blog\\\\[slug]\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git config *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(npm install *)"
+    ]
+  }
+}

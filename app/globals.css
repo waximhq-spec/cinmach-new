@@ -1,0 +1,548 @@
+@import "tailwindcss";
+
+@theme {
+  /* Color tokens -- CINMACH PRODUCTIONS design system v1.0 */
+  --color-black-primary: #0a0a0b;
+  --color-black-secondary: #16161a;
+  --color-black-surface: #1e1e22;
+
+  --color-white-primary: #f5f3f0;
+  --color-white-secondary: #ece9e4;
+
+  --color-red: #c81e3a;
+  --color-red-dark: #8c1128;
+  --color-red-pressed: #6b0d1f;
+  --color-red-light: #e8929f;
+  --color-red-tint: #fff8f8;
+
+  --color-gray: #6b6b70;
+  --color-gray-light: #b8b5b0;
+
+  --color-border-dark: #2a2a2e;
+  --color-border-light: #e2e0dc;
+
+  --color-ink: #141414;
+  --color-ink-muted: #3a3a3a;
+
+  --color-success: #2a6b3a;
+
+  /* Fonts -- self-hosted via next/font/local, see app/fonts.ts. Only these 3 families ship in production. */
+  --font-display: var(--font-clash-display), sans-serif;
+  --font-sans: var(--font-general-sans), sans-serif;
+  --font-editorial: var(--font-switzer), var(--font-general-sans), sans-serif;
+
+  /* Deliberately above phone widths so 2-col grids only trigger on large phones/tablets */
+  --breakpoint-xs: 480px;
+
+  /* Motion */
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  * {
+    border-color: var(--color-border-dark);
+  }
+
+  html {
+    overflow-x: clip;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-black-primary);
+    color: var(--color-white-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-red);
+    color: var(--color-white-primary);
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 3px;
+  }
+}
+
+/* ============================================================
+   TYPE SCALE (Perfect Fourth, fluid clamp)
+   ============================================================ */
+@layer components {
+  .text-mega {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+    font-size: clamp(3.5rem, 1.2rem + 11vw, 11rem);
+  }
+
+  /* Hero heading -- vh-aware so it always fits the viewport height */
+  .text-hero {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+    font-size: clamp(2.5rem, min(9vw, 13.5vh), 7.25rem);
+  }
+
+  .text-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    font-size: clamp(2.75rem, 1.2rem + 6.6vw, 6rem);
+  }
+
+  .text-h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    font-size: clamp(2.25rem, 1.6rem + 2.75vw, 3.75rem);
+  }
+
+  .text-h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    font-size: clamp(1.875rem, 1.45rem + 1.8vw, 2.75rem);
+  }
+
+  .text-h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.005em;
+    font-size: clamp(1.5rem, 1.3rem + 0.85vw, 1.9375rem);
+  }
+
+  .text-h4 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0;
+    font-size: clamp(1.125rem, 1.04rem + 0.36vw, 1.375rem);
+  }
+
+  .text-lead {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.005em;
+    font-size: clamp(1.1875rem, 1.1rem + 0.36vw, 1.4375rem);
+  }
+
+  .text-body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+    font-size: clamp(1rem, 0.97rem + 0.11vw, 1.0625rem);
+  }
+
+  .text-body-sm {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    font-size: clamp(0.875rem, 0.85rem + 0.11vw, 0.9375rem);
+  }
+
+  .text-caption {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    font-size: clamp(0.75rem, 0.72rem + 0.11vw, 0.8125rem);
+  }
+
+  /* Technical uppercase micro-label -- the BASIC/DEPT "meta" voice */
+  .text-label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.4;
+    letter-spacing: 0.16em;
+    font-size: clamp(0.6875rem, 0.66rem + 0.11vw, 0.75rem);
+  }
+
+  .text-mono {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem);
+  }
+
+  /* ============================================================
+     BUTTONS
+     ============================================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(0.8125rem, 0.8rem + 0.06vw, 0.875rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 1.15rem 2rem;
+    border-radius: 999px;
+    transition:
+      background-color 300ms var(--ease-cinematic),
+      border-color 300ms var(--ease-cinematic),
+      color 300ms var(--ease-cinematic),
+      transform 150ms var(--ease-cinematic);
+    cursor: pointer;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-primary {
+    background: var(--color-red);
+    color: var(--color-white-primary);
+  }
+  .btn-primary:hover {
+    background: var(--color-red-dark);
+  }
+  .btn-primary:active {
+    background: var(--color-red-pressed);
+  }
+  .btn-primary:focus-visible {
+    outline: 2px solid var(--color-white-primary);
+    outline-offset: 3px;
+  }
+
+  .btn-solid-light {
+    background: var(--color-white-primary);
+    color: var(--color-ink);
+  }
+  .btn-solid-light:hover {
+    background: var(--color-white-secondary);
+  }
+
+  .btn-solid-dark {
+    background: var(--color-black-primary);
+    color: var(--color-white-primary);
+  }
+  .btn-solid-dark:hover {
+    background: var(--color-black-secondary);
+  }
+
+  .btn-outline-dark {
+    background: transparent;
+    color: var(--color-white-primary);
+    border: 1px solid var(--color-border-dark);
+  }
+  .btn-outline-dark:hover {
+    border-color: var(--color-white-primary);
+  }
+  .btn-outline-dark:focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 3px;
+  }
+
+  .btn-outline-light {
+    background: transparent;
+    color: var(--color-ink);
+    border: 1px solid var(--color-border-light);
+  }
+  .btn-outline-light:hover {
+    border-color: var(--color-ink);
+  }
+
+  /* ============================================================
+     LINKS
+     ============================================================ */
+  .link-red {
+    color: var(--color-red);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-red) 40%, transparent);
+    text-underline-offset: 4px;
+    transition: color 200ms ease, text-decoration-color 200ms ease;
+  }
+  .link-red:hover {
+    color: var(--color-red-dark);
+    text-decoration-color: var(--color-red-dark);
+  }
+  .link-red:focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+  }
+
+  /* Animated underline sweep -- editorial nav / inline links */
+  .link-sweep {
+    position: relative;
+    display: inline-block;
+  }
+  .link-sweep::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 400ms var(--ease-cinematic);
+  }
+  .link-sweep:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* ============================================================
+     FORM FIELDS
+     ============================================================ */
+  .field {
+    width: 100%;
+    background: var(--color-black-surface);
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-white-primary);
+    padding: 0.95rem 1.1rem;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    border-radius: 0;
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+  .field::placeholder {
+    color: var(--color-gray);
+  }
+  .field:focus-visible {
+    outline: none;
+    border-color: var(--color-red);
+    box-shadow: 0 0 0 1px var(--color-red);
+  }
+  .field-error {
+    border-color: var(--color-red);
+  }
+}
+
+/* ============================================================
+   UTILITIES (grid, grain, marquee, reveal, meta)
+   ============================================================ */
+@layer utilities {
+  .container-cin {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-cin {
+      padding-inline: 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .container-cin {
+      padding-inline: 4rem;
+    }
+  }
+
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ============================================================
+   MARQUEE (plain CSS -- outside layers for reliable priority)
+   ============================================================ */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: 0;
+  width: 100%;
+}
+.marquee__track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0;
+  min-width: 100%;
+  animation: marquee-scroll var(--marquee-duration, 32s) linear infinite;
+}
+.marquee[data-direction="right"] .marquee__track {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* ============================================================
+   WORK MARQUEE -- "Selected Work": two cards on screen at once,
+   full-bleed (no gap/padding), paced right-to-left auto-scroll.
+   Hold on each pair, then ease to the next. Tuned for a 6-card
+   (3-pair) featured list -- see FeaturedWork.tsx.
+   ============================================================ */
+.work-marquee {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+.work-marquee__track {
+  display: flex;
+  width: 100%;
+  animation: work-marquee-scroll var(--work-marquee-duration, 24s) infinite;
+}
+.work-marquee:hover .work-marquee__track {
+  animation-play-state: paused;
+}
+.work-marquee__card {
+  flex: 0 0 50%;
+  width: 50%;
+}
+@keyframes work-marquee-scroll {
+  0%,
+  26.667% {
+    transform: translateX(0%);
+  }
+  33.333% {
+    transform: translateX(-100%);
+    animation-timing-function: var(--ease-cinematic);
+  }
+  60% {
+    transform: translateX(-100%);
+  }
+  66.667% {
+    transform: translateX(-200%);
+    animation-timing-function: var(--ease-cinematic);
+  }
+  93.333% {
+    transform: translateX(-200%);
+  }
+  100% {
+    transform: translateX(-300%);
+    animation-timing-function: var(--ease-cinematic);
+  }
+}
+
+/* ============================================================
+   SCROLL REVEAL (plain CSS -- NOT in @layer, avoids priority bugs
+   and the body-scroll-container trap)
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s var(--ease-cinematic),
+    transform 0.7s var(--ease-cinematic);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Clip-reveal for images/media -- wipe up */
+.reveal-clip {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.9s var(--ease-cinematic);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-clip.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Line-by-line mask reveal for big headings */
+.reveal-line {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em);
+  transition:
+    opacity 0.8s var(--ease-cinematic),
+    transform 0.8s var(--ease-cinematic);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-line.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   MODAL MOTION
+   ============================================================ */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modal-pop-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fade-in-up-sm {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-backdrop { animation: modal-backdrop-in 0.3s var(--ease-cinematic) both; }
+.modal-pop { animation: modal-pop-in 0.4s var(--ease-cinematic) both; }
+.fade-in { animation: fade-in-up-sm 0.5s var(--ease-cinematic) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-line {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .reveal-clip {
+    clip-path: none;
+    transition: none;
+  }
+  .marquee__track {
+    animation: none;
+  }
+  .work-marquee__track {
+    animation: none;
+  }
+  .modal-backdrop,
+  .modal-pop,
+  .fade-in {
+    animation: none;
+  }
+}

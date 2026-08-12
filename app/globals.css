@@ -433,6 +433,41 @@
 }
 
 /* ============================================================
+   PROCESS SECTION -- mobile horizontal step track
+   Below 1024px the stage pins and the step track slides sideways as
+   the page scrolls (see ProcessSection.tsx). That needs real vertical
+   room, and it is motion some users don't want -- so on short
+   viewports, or under prefers-reduced-motion, it unwinds to a plain
+   vertical stack. Desktop is untouched: it has its own CSS-only
+   sticky mechanic and never reaches these rules.
+   ============================================================ */
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce),
+  (max-width: 1023px) and (max-height: 620px) {
+  .process-section {
+    height: auto;
+  }
+  .process-stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+  .process-track {
+    flex-direction: column;
+    height: auto;
+    transform: none !important;
+  }
+  .process-card {
+    width: auto;
+    padding-block: 4rem;
+    border-right-width: 0;
+    border-top-width: 1px;
+  }
+  .process-card:first-child {
+    border-top-width: 0;
+  }
+}
+
+/* ============================================================
    SCROLL REVEAL (plain CSS -- NOT in @layer, avoids priority bugs
    and the body-scroll-container trap)
    ============================================================ */

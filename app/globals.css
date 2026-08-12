@@ -465,6 +465,29 @@
   .process-card:first-child {
     border-top-width: 0;
   }
+  /* The lead-in only makes sense for the sideways track */
+  .process-intro {
+    display: none;
+  }
+}
+
+/* Nudges toward the next card. Transform-only, so it stays on the compositor. */
+@keyframes process-arrow-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+.process-arrow {
+  animation: process-arrow-nudge 1.8s var(--ease-cinematic) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .process-arrow {
+    animation: none;
+  }
 }
 
 /* ============================================================

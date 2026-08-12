@@ -8,6 +8,9 @@ import Reveal from "@/components/Reveal";
 import { projects, Project } from "@/lib/content";
 
 // Temporary placeholders until real project stills/video frames are supplied.
+// Served straight from Pexels' CDN -- the originals are 4000-6700px wide
+// (~2.5MB each), so every request is resized and compressed at the edge. A
+// 1200px variant is ~335KB, which matters a lot on phone data.
 const PLACEHOLDER_IMAGES = [
   "https://images.pexels.com/photos/20245833/pexels-photo-20245833.jpeg",
   "https://images.pexels.com/photos/29488811/pexels-photo-29488811.jpeg",
@@ -18,6 +21,10 @@ const PLACEHOLDER_IMAGES = [
 ];
 // Deliberately non-sequential so neighbouring cards don't share a look.
 const SHUFFLE_ORDER = [3, 0, 5, 1, 4, 2];
+
+const SRC_WIDTHS = [640, 960, 1280, 1600];
+const sized = (url: string, w: number) => `${url}?auto=compress&cs=tinysrgb&w=${w}`;
+const srcSetFor = (url: string) => SRC_WIDTHS.map((w) => `${sized(url, w)} ${w}w`).join(", ");
 
 const AUTO_ADVANCE_MS = 5000;
 const TRANSITION_MS = 900;
@@ -148,7 +155,9 @@ export default function FeaturedWork() {
                     <div className="grain absolute inset-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={imageFor(p.slug)}
+                        src={sized(imageFor(p.slug), 1280)}
+                        srcSet={srcSetFor(imageFor(p.slug))}
+                        sizes="(min-width: 768px) 50vw, 100vw"
                         alt=""
                         fetchPriority="low"
                         decoding="async"
